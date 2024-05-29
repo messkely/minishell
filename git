@@ -1,0 +1,108 @@
+The "Minishell" project involves creating a simplified shell similar to Bash. Here's a breakdown of the project's requirements and guidelines:
+
+### Project Overview
+
+#### Mandatory Part
+Your shell should:
+1. **Display a Prompt**: It should display a prompt waiting for a new command.
+2. **Working History**: Maintain a history of commands.
+3. **Command Execution**: 
+   - Search and launch executables based on the `PATH` variable or using relative/absolute paths.
+   - Handle single quotes (`'`) and double quotes (`"`), with special behavior for `$` inside double quotes.
+   - Implement input (`<`), output (`>`), here-doc (`<<`), and append (`>>`) redirections.
+   - Implement pipes (`|`) to connect commands in a pipeline.
+   - Expand environment variables (`$` followed by characters) and the special variable `$?` (exit status of the last executed command).
+   - Handle interactive mode controls:
+     - `ctrl-C`: Display a new prompt on a new line.
+     - `ctrl-D`: Exit the shell.
+     - `ctrl-\`: Do nothing.
+
+4. **Built-in Commands**: Implement the following built-in commands:
+   - `echo` with `-n` option.
+   - `cd` with a relative or absolute path.
+   - `pwd` with no options.
+   - `export` with no options.
+   - `unset` with no options.
+   - `env` with no options or arguments.
+   - `exit` with no options.
+
+#### Common Instructions
+- **Language**: The project must be written in C.
+- **Norm Compliance**: Follow coding norms; no segmentation faults, bus errors, double frees, etc.
+- **Memory Management**: Properly free all heap-allocated memory.
+- **Makefile**: Provide a `Makefile` with rules for compiling (e.g., `$(NAME)`, `all`, `clean`, `fclean`, `re`). Use `-Wall`, `-Wextra`, and `-Werror` flags.
+- **Submission**: Submit via the assigned git repository.
+
+### Implementation Steps
+
+1. **Setup Your Environment**: Create a directory structure for your project.
+   - Include a `Makefile`, `*.h`, and `*.c` files.
+
+2. **Display Prompt**: Implement a loop that continuously displays a prompt and waits for user input.
+   ```c
+   while (1) {
+       char *input = readline("minishell> ");
+       if (input == NULL) break; // Handle ctrl-D
+       // Process input
+       free(input);
+   }
+   ```
+
+3. **Command Parsing**: Tokenize the user input to separate commands and arguments.
+   ```c
+   char **tokens = tokenize(input);
+   ```
+
+4. **Built-in Command Handling**: Implement functions for built-in commands (e.g., `echo`, `cd`, `pwd`, `export`, `unset`, `env`, `exit`).
+   ```c
+   if (strcmp(tokens[0], "cd") == 0) {
+       // Handle cd command
+   }
+   ```
+
+5. **External Command Execution**: Use `fork()` and `execve()` to execute external commands.
+   ```c
+   pid_t pid = fork();
+   if (pid == 0) {
+       execve(path, tokens, envp);
+       perror("execve");
+       exit(EXIT_FAILURE);
+   } else if (pid > 0) {
+       waitpid(pid, &status, 0);
+   }
+   ```
+
+6. **Redirections and Pipes**: Handle input/output redirections and pipe connections.
+   ```c
+   if (contains_pipe(input)) {
+       // Handle pipes
+   } else {
+       // Handle redirections
+   }
+   ```
+
+7. **Signal Handling**: Implement handlers for `ctrl-C`, `ctrl-D`, and `ctrl-\`.
+
+### Additional Resources
+- **Readline Library**: Use `readline()`, `rl_clear_history()`, `rl_on_new_line()`, `rl_replace_line()`, `rl_redisplay()`, `add_history()`.
+- **System Calls and Functions**: `fork()`, `execve()`, `pipe()`, `dup2()`, `waitpid()`, `signal()`, `getcwd()`, `chdir()`, `stat()`, `lstat()`, `opendir()`, `readdir()`, `closedir()`, `getenv()`, `tcsetattr()`, `tcgetattr()`.
+
+### Example Structure
+```plaintext
+minishell/
+├── Makefile
+├── src/
+│   ├── main.c
+│   ├── builtins.c
+│   ├── executor.c
+│   ├── parser.c
+│   └── signals.c
+├── include/
+│   └── minishell.h
+└── libft/
+    ├── Makefile
+    ├── libft.h
+    └── src/
+```
+
+By following these guidelines and implementing the steps outlined, you'll be able to create a functional minishell for your project. Let me know if you need help with any specific part of the implementation.
