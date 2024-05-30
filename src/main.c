@@ -6,11 +6,11 @@
 /*   By: messkely <messkely@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/29 14:34:20 by messkely          #+#    #+#             */
-/*   Updated: 2024/05/29 19:52:28 by messkely         ###   ########.fr       */
+/*   Updated: 2024/05/30 19:18:22 by messkely         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "minishell.h"
+#include "../minishell.h"
 
 t_token *tokenize(char *input)
 {
@@ -42,8 +42,8 @@ t_token *tokenize(char *input)
     return (tokenList);
 }
 
-int main() {
-    char input[1024];
+int main()
+{
     t_token *tokenList;
 
 	while (1)

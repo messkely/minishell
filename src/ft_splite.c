@@ -6,11 +6,11 @@
 /*   By: messkely <messkely@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/29 19:06:25 by messkely          #+#    #+#             */
-/*   Updated: 2024/05/29 19:52:39 by messkely         ###   ########.fr       */
+/*   Updated: 2024/05/30 10:02:53 by messkely         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "minishell.h"
+#include "../minishell.h"
 
 static int	ft_check(char s, char c)
 {
