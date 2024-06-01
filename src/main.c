@@ -6,67 +6,54 @@
 /*   By: messkely <messkely@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/29 14:34:20 by messkely          #+#    #+#             */
-/*   Updated: 2024/05/30 19:18:22 by messkely         ###   ########.fr       */
+/*   Updated: 2024/05/31 17:50:45 by messkely         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
 
-t_token *tokenize(char *input)
+void	fill_stack(char **arr)
 {
-	t_token *tokenList;
-	char **tmp;
-	int i;
+	int	i;
 
-    tokenList = malloc(sizeof(t_token));
-    if (!tokenList)
-	{
-        write(1, "Allocation error\n", 17);
-        exit(1);
-    }
-
-    tokenList->count = 0;
-    tmp = ft_split(input, ' ');
 	i = 0;
-    while (tmp[i] != NULL)
-	{
-        if (tokenList->count >= MAX_TOKENS)
-		{
-            write(1, "Too many tokens\n", 16);
-            exit(1);
-        }
-        tokenList->tokens[tokenList->count++] = tmp[i++];
-    }
-
-    tokenList->tokens[tokenList->count] = NULL;
-    return (tokenList);
+	while (arr[i])
+		ft_add_back(lst, ft_add_new_node(ft_atoi(arr[i++])));
+	ft_broom(arr);
 }
 
-int main()
+void	ft_parser(t_prompt *prompt)
 {
-    t_token *tokenList;
-
+	char **arr;
+	int i = 0;
+	
 	while (1)
 	{
 		char *input = readline("minishell> ");
 		if (input == NULL)
-			break;
-        input[strcspn(input, "\n")] = '\0';
+			break ;
+        input[ft_strcspn(input, "\n")] = '\0';
+        arr = ft_split(input, '|');
+        fill_stack(arr);
+		// what i want to do when i splite cmd
+		while (arr[i])
+			printf("%s \n", arr[i++]);
 
-        tokenList = tokenize(input);
-        if (tokenList->count == 0) {
-            free(tokenList);
-            continue;
-        }
-
-
-        for (int i = 0; i < tokenList->count; i++) {
-            printf("Token[%d]: %s\n", i, tokenList->tokens[i]);
-        }
-
-        free(tokenList);
 		free(input);
 		wait(NULL);
 	}
+}
+
+int main(int ac, char **av, char **env)
+{
+	t_prompt prompt;
+
+	(void)ac;
+	(void)av;
+	int i = 0;
+    ft_parser(&prompt);
+	while (env[i])
+		printf("%s\n", env[i++]);
+	
     return 0;
 }
