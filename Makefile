@@ -2,9 +2,8 @@ NAME 	= minishell
 CC		= cc
 FLAGS	= -Wall -Wextra -Werror
 LDFLAGS	= -lreadline
-SRC		= src/main.c src/ft_splite.c 
-OBJDIR  = obj
-OBJ 	= $(SRC:src/%.c=$(OBJDIR)/%.o)
+SRC		= src/main.c src/ft_split.c src/tokens_fun.c src/parser.c
+OBJ 	= $(SRC:.c=.o)
 RM		= rm -f
 
 all: $(NAME)
@@ -12,19 +11,16 @@ all: $(NAME)
 $(NAME): $(OBJ)
 	$(CC) $(FLAGS) $(OBJ) -o $(NAME) $(LDFLAGS)
 
-$(OBJDIR)/%.o: src/%.c minishell.h | $(OBJDIR)
+%.o: %.c minishell.h
 	$(CC) $(FLAGS) -c $< -o $@
-
-$(OBJDIR):
-	mkdir $(OBJDIR)
 
 clean:
 	$(RM) $(OBJ)
-	$(RM) -r $(OBJDIR)
 
 fclean: clean
 	$(RM) $(NAME)
 
-re: fclean all
+re: fclean all clean
+	clear
 
-.PHONY: clean fclean re
+.PHONY: clean

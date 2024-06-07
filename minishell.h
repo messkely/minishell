@@ -6,7 +6,7 @@
 /*   By: messkely <messkely@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/29 19:51:11 by messkely          #+#    #+#             */
-/*   Updated: 2024/05/31 17:46:30 by messkely         ###   ########.fr       */
+/*   Updated: 2024/06/07 11:02:27 by messkely         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,27 +17,31 @@
 #include <readline/readline.h>
 #include <readline/history.h>
 
-#ifndef HEADER_H
-#define HEADER_H
+#ifndef MINISHELL_H
+#define MINISHELL_H
 
 #define MAX_TOKENS 100
-#define TOKEN_COMMAND 0
-#define TOKEN_PIPE 1
-#define I_RED 2 // <
-#define O_RED 3 // >
-#define H_DOC 4 // <<
-#define O_APP 5 // >>
 
 typedef struct s_prompt
 {
-	char			*cmd;
+	char			**argv;
 	char			*file;
 	int				red_typ;
 	struct s_prompt	*next;
 }	t_prompt;
 
-char	**ft_split(const char *s, char c);
-void	check_qoutes(char *s, char qoute);
-size_t  ft_strcspn(const char *s, const char *reject);
+void		check_quotes(char *s);
+char		*rm_escape_char(char *s);
+char		**process_token(char *s);
+char		*process_red(char *s);
+char		is_escape(char c, int *single_quote, int *double_quote, int *backslash);
+
+size_t  	ft_strcspn(const char *s, const char *reject);
+t_prompt	*ft_lstnew(char *content);
+void		ft_add_back(t_prompt *head, t_prompt *new);
+void    	ft_error(char *s);
+size_t  	ft_strlen(const char *s);
+char		**ft_split(const char *s, char c);
+void		fill_stack(char **arr, t_prompt *pmp);
 
 #endif
