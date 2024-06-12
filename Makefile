@@ -9,7 +9,7 @@ RM		= rm -f
 all: $(NAME)
 
 $(NAME): $(OBJ)
-	$(CC) $(FLAGS) $(OBJ) -o $(NAME) $(LDFLAGS) libft/libft.a
+	$(CC) $(FLAGS) $(OBJ) -o $(NAME) $(LDFLAGS) libftt/libft.a
 
 %.o: %.c minishell.h
 	$(CC) $(FLAGS) -c $< -o $@
