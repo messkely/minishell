@@ -1,55 +1,59 @@
-#include <libc.h>
+// #include "minishell.h"
 
-void	check_qoutes(char *s, char qoute)
-{
-	int i = 0;
-	int flg = 1;
-	int flg_q = 1;
-
-	s = malloc(5);
-	s[0] = '\'';
-	s[1] = 'a';
-	s[2] = 'c';
-	s[3] = 'a';
-	s[4] = '\0';
-	s[5] = 'g';
-	s[6] = 'g';
-	s[7] = 'g';
-	s[8] = 'g';
-	s[9] = 'g';
-	// printf("this is last char: %s\n", s);
-
-	while (s[i])// 'kjh
-	{
-		if (s[i] == qoute)
-		{
-			flg = 0;
-			i++;
-			while (s[i] && s[i] != qoute)
-				i++;
-		}
-		if (s[i] == qoute)
-			flg = 1;
-		
-		// i++;
-		printf("%d\n",i);
-	}
-	if (s[i] == '\0' && !flg)
-	{
-		printf("error");
-		exit(1);
-	}
-	else
-	{
-		printf("all qoutes is closed");
-		exit(0);
-	}
+int count_valid_elements(char *args[], int n) {
+    int count = 0;
+    for (int i = 0; i < n; i++) {
+        if (strcmp(args[i], ">") == 0 || strcmp(args[i], "<") == 0) {
+            i++;
+        } else {
+            count++;
+        }
+    }
+    return count;
 }
 
-int main()
-{
-	char *s = "";
-	check_qoutes(s, '\'');
-	// check_qoutes("\"'''\"", '\'');
-	return (120);
+void remove_redirection_args(char *args[], int n, t_prompt *pmp) {
+    int new_size = count_valid_elements(args, n);
+    char **new_args = (char **)malloc(new_size * sizeof(char *));
+    int j = 0;
+    
+    for (int i = 0; i < n; i++) {
+        if (!strcmp(args[i], ">") || !strcmp(args[i], "<") || !strcmp(args[i], ">>") || !strcmp(args[i], "<<")) {
+            // Concatenate the redirection symbol and the next argument to pmp->file
+            pmp->file = ft_strjoin(pmp->file, args[i]);
+            pmp->file = ft_strjoin(pmp->file, " ");
+            pmp->file = ft_strjoin(pmp->file, args[++i]);
+            pmp->file = ft_strjoin(pmp->file, " ");
+        } else {
+            new_args[j++] = args[i];
+        }
+    }
+
+    for (int i = 0; i < new_size; i++) {
+        printf("%s ", new_args[i]);
+    }
+    printf("\n");
+
+    // Print the concatenated file string
+    printf("file: %s\n", pmp->file);
+
+    // Free allocated memory
+    free(new_args);
+}
+
+int main() {
+    t_prompt pmp;
+    pmp.file = NULL; // Initialize pmp.file to NULL
+
+    char *args[] = {"cat", "file1", ">", "file2", "<", "file3", "file4", "<<", "file5"};
+    int n = sizeof(args) / sizeof(args[0]);
+
+    remove_redirection_args(args, n, &pmp);
+
+    // Free allocated memory for pmp.file
+    if (pmp.file) {
+        free(pmp.file);
+    }
+
+    return 0;
 }

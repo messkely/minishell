@@ -2,29 +2,24 @@ NAME 	= minishell
 CC		= cc
 FLAGS	= -Wall -Wextra -Werror
 LDFLAGS	= -lreadline
-SRC		= src/main.c src/ft_splite.c 
-OBJDIR  = obj
-OBJ 	= $(SRC:src/%.c=$(OBJDIR)/%.o)
+SRC		= src/minishell.c src/syntax_err.c src/parser.c src/linked_list_utils.c
+OBJ 	= $(SRC:.c=.o)
 RM		= rm -f
 
 all: $(NAME)
 
 $(NAME): $(OBJ)
-	$(CC) $(FLAGS) $(OBJ) -o $(NAME) $(LDFLAGS)
+	$(CC) $(FLAGS) $(OBJ) -o $(NAME) $(LDFLAGS) libftt/libft.a
 
-$(OBJDIR)/%.o: src/%.c minishell.h | $(OBJDIR)
+%.o: %.c minishell.h
 	$(CC) $(FLAGS) -c $< -o $@
-
-$(OBJDIR):
-	mkdir $(OBJDIR)
 
 clean:
 	$(RM) $(OBJ)
-	$(RM) -r $(OBJDIR)
 
 fclean: clean
 	$(RM) $(NAME)
 
 re: fclean all
 
-.PHONY: clean fclean re
+.PHONY: clean

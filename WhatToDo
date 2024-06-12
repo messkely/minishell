@@ -1,0 +1,14 @@
+handle :
+< "file"
+< 'file'
+cmd > 'file'
+cmd > 1file
+cmd > *file
+
+
+
+
+
+#benti lya kadewez ghir les alphabets men ba3d reds
+#nefs chay2 f < 1file
+#had files : 1file .file *file &file +file #file. khass it creyaw
