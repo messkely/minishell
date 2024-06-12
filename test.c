@@ -1,101 +1,59 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include <unistd.h>
-#include <string.h>
-#include <readline/readline.h>
-#include <readline/history.h>
+// #include "minishell.h"
 
-void	ft_error(char *s)
-{
-	printf("minishell: %s\n", s);
-	exit(1);
+int count_valid_elements(char *args[], int n) {
+    int count = 0;
+    for (int i = 0; i < n; i++) {
+        if (strcmp(args[i], ">") == 0 || strcmp(args[i], "<") == 0) {
+            i++;
+        } else {
+            count++;
+        }
+    }
+    return count;
 }
 
-void	check_quotes(char *s)
-{
-	int	i;
-	int	single_quote;
-	int	double_quote;
-	int	backslash;
+void remove_redirection_args(char *args[], int n, t_prompt *pmp) {
+    int new_size = count_valid_elements(args, n);
+    char **new_args = (char **)malloc(new_size * sizeof(char *));
+    int j = 0;
+    
+    for (int i = 0; i < n; i++) {
+        if (!strcmp(args[i], ">") || !strcmp(args[i], "<") || !strcmp(args[i], ">>") || !strcmp(args[i], "<<")) {
+            // Concatenate the redirection symbol and the next argument to pmp->file
+            pmp->file = ft_strjoin(pmp->file, args[i]);
+            pmp->file = ft_strjoin(pmp->file, " ");
+            pmp->file = ft_strjoin(pmp->file, args[++i]);
+            pmp->file = ft_strjoin(pmp->file, " ");
+        } else {
+            new_args[j++] = args[i];
+        }
+    }
 
-	i = 0;
-	single_quote = 0;
-	double_quote = 0;
-	while (s[i])
-	{
-		if (s[i] == '\\' && !backslash && !single_quote)
-			backslash = 1;
-		else if (s[i] == '\\' && backslash)
-			backslash = 0;
-		else if (s[i] != '\\' && backslash)
-			backslash = 0;
-		else if (s[i] == '\'' && !double_quote)
-			single_quote = !single_quote;
-		else if (s[i] == '"' && !single_quote)
-			double_quote = !double_quote;
-		i++;
-	}
-	if (single_quote || double_quote || backslash)
-		printf("syntax error: unclosed quotes or backslashes\n");
+    for (int i = 0; i < new_size; i++) {
+        printf("%s ", new_args[i]);
+    }
+    printf("\n");
+
+    // Print the concatenated file string
+    printf("file: %s\n", pmp->file);
+
+    // Free allocated memory
+    free(new_args);
 }
 
-char	is_escape(char c, int *single_quote, int *double_quote, int *backslash)
-{
-	if (c == '\\' && !(*backslash) && !(*single_quote))
-		return (*backslash = 1, 0);
-	else if (c == '\\' && *backslash)
-		return (*backslash = 0, c);
-	else if (c != '\\' && *backslash)
-		return (*backslash = 0, c);
-	else if (c == '\'' && !(*double_quote))
-		return (*single_quote = !(*single_quote), 0);
-	else if (c == '"' && !(*single_quote))
-		return (*double_quote = !(*double_quote), 0);
-	else
-		return (c);
-}
+int main() {
+    t_prompt pmp;
+    pmp.file = NULL; // Initialize pmp.file to NULL
 
+    char *args[] = {"cat", "file1", ">", "file2", "<", "file3", "file4", "<<", "file5"};
+    int n = sizeof(args) / sizeof(args[0]);
 
-char	*rm_escape_char(char *s)
-{
-	int		i;
-	int		j;
-	char	*res;
-	int		single_quote;
-	int		double_quote;
-	int		backslash;
-	char	escaped;
+    remove_redirection_args(args, n, &pmp);
 
-	i = 0;
-	j = 0;
-	single_quote = 0;
-	double_quote = 0;
-	backslash = 0;
-	check_quotes(s);
-	res = malloc(strlen(s) + 1);
-	if (!res)
-		return (NULL);
-	while (s[i])
-	{
-		escaped = is_escape(s[i], &single_quote, &double_quote, &backslash);
-		if (escaped)
-			res[j++] = escaped;
-		i++;
-	}
-	return (res[j] = '\0', res);
-}
+    // Free allocated memory for pmp.file
+    if (pmp.file) {
+        free(pmp.file);
+    }
 
-int main()
-{
-	while (1)
-	{
-		char *s = readline("test> ");
-		if (s == NULL)
-			break;
-		char *new_str = rm_escape_char(s);
-		printf("%s\n", new_str);
-		free(new_str);
-		free(s);
-	}
-	return 0;
+    return 0;
 }
