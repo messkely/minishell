@@ -14,32 +14,35 @@
 
 t_prompt	*ft_lstnew(char *data)
 {
-	t_prompt	*new;
-	int			i;
-	int			j;
+	t_prompt *new;
+	int i;
+	int j;
 
 	i = 0;
-	j = 0;
 	new = malloc(sizeof(t_prompt));
-	if (new != NULL)
+	if (!new)
+		return (NULL);
+	new->argv = process_token(ft_strtrim(data, " "), ' ');
+	if (!new->argv)
 	{
-		new->argv = process_token(data, ' ');
-		while (new->argv[i])
-		{
-			new->argv[i] = rm_escape_char(new->argv[i]);
-			i++;
-		}
-		new->file = process_red(data);
-		i = 0;
-		while (new->argv[i])
-		{
-			printf("argv[%d] = %s\n", j++, new->argv[i++]);
-		}
-		printf("file = %s\n", new->file);
-		printf("########################\n");
-		return (new->next = NULL, new);
+		free(new);
+		return (NULL);
 	}
-	return (NULL);
+	while (new->argv[i])
+	{
+		new->argv[i] = rm_escape_char(new->argv[i]);
+		i++;
+	}
+	new->file = process_red(data);
+	i = 0;
+	j = 0;
+	while (new->argv[i])
+	{
+		printf("argv[%d] = %s\n", j++, new->argv[i++]);
+	}
+	printf("file = %s\n", new->file);
+	printf("########################\n");
+	return (new->next = NULL, new);
 }
 
 t_prompt	*ft_last_node(t_prompt *head)
@@ -63,3 +66,4 @@ void	ft_add_back(t_prompt *head, t_prompt *new)
 	last = ft_last_node(head);
 	last->next = new;
 }
+

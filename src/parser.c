@@ -38,7 +38,7 @@ char	**process_token(char *s, char token)
 	double_quote = 0;
 	single_quote = 0;
 	tok_count = 0;
-	av = malloc(100 * sizeof(char *));
+	av = malloc((ft_strlen(s) + 1) * sizeof(char));
 	if (!av)
 		return (NULL);
 	while (s[i])
@@ -98,7 +98,7 @@ char	*rm_escape_char(char *s)
 	j = 0;
 	single_quote = 0;
 	double_quote = 0;
-	res = malloc(strlen(s) + 1);
+	res = malloc((ft_strlen(s) + 1) * sizeof(char));
 	if (!res)
 		return (NULL);
 	while (s[i])

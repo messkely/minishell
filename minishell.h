@@ -6,7 +6,7 @@
 /*   By: messkely <messkely@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/29 19:51:11 by messkely          #+#    #+#             */
-/*   Updated: 2024/06/12 10:34:42 by messkely         ###   ########.fr       */
+/*   Updated: 2024/06/24 08:55:02 by messkely         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,13 +18,13 @@
 # include <string.h>
 # include <readline/readline.h>
 # include <readline/history.h>
-# include "./libft/libft.h"
+# include "./libftt/libft.h"
 # define MAX_TOKENS 100
 
 typedef struct s_prompt
 {
 	char			**argv;
-	char			*file;
+	char			**file;
 	struct s_prompt	*next;
 }	t_prompt;
 
