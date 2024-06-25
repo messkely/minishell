@@ -6,7 +6,7 @@
 /*   By: messkely <messkely@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/10 20:28:39 by messkely          #+#    #+#             */
-/*   Updated: 2024/06/25 11:16:06 by messkely         ###   ########.fr       */
+/*   Updated: 2024/06/25 22:41:13 by messkely         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,20 +20,11 @@ t_prompt *ft_lstnew(char *data)
     new = malloc(sizeof(t_prompt));
     if (!new)
         return (NULL);
-    new->file = malloc(100 * sizeof(char *));
-    if (!new->file)
-    {
-        free(new);
-        return (NULL);
-    }
     data = ft_strtrim(data, " ");
     new->argv = process_token(data, ' ');
 	free(data);
     if (!new->argv)
-    {
-        free(new);
-        return (NULL);
-    }
+        return (free(new), NULL);
     i = 0;
     while (new->argv[i])
     {

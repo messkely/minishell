@@ -6,27 +6,11 @@
 /*   By: messkely <messkely@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/29 14:34:20 by messkely          #+#    #+#             */
-/*   Updated: 2024/06/25 11:21:29 by messkely         ###   ########.fr       */
+/*   Updated: 2024/06/25 22:28:35 by messkely         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
-
-void ft_free_prompt(t_prompt *pmp)
-{
-    while (pmp)
-    {
-        t_prompt *temp = pmp;
-        pmp = pmp->next;
-        for (int i = 0; temp->argv[i]; i++)
-            free(temp->argv[i]);
-        free(temp->argv);
-        for (int i = 0; temp->file[i]; i++)
-            free(temp->file[i]);
-        free(temp->file);
-        free(temp);
-    }
-}
 
 void	ft_parser(t_prompt *pmp)
 {
@@ -52,15 +36,20 @@ void	ft_parser(t_prompt *pmp)
         free(input);
 	}
 }
-
+void f(void)
+{
+	system("leaks ./minishell");
+}
 int	main(int ac, char **av, char **env)
 {
 	t_prompt	*prompt = NULL;
 
+	atexit(f);
 	(void)ac;
 	(void)av;
 	(void)env;
 	ft_parser(prompt);
-	ft_free_prompt(prompt);
 	return (0);
 }
+
+// cat file1 > file2 file3 >> file4 file5 file6 | cat file1 > file2 file3 >> file4 file5 file6

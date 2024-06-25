@@ -6,7 +6,7 @@
 /*   By: messkely <messkely@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/29 19:51:11 by messkely          #+#    #+#             */
-/*   Updated: 2024/06/25 11:15:05 by messkely         ###   ########.fr       */
+/*   Updated: 2024/06/25 22:44:23 by messkely         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,13 +31,12 @@ typedef struct s_prompt
 int			check_syntax(char *input);
 char		*rm_escape_char(char *s);
 char		**process_token(char *s, char token);
-
 t_prompt	*ft_lstnew(char *content);
 void		ft_add_back(t_prompt *head, t_prompt *new);
 void		ft_error(char *s, char c);
 void		fill_stack(char **arr, t_prompt *pmp);
-
-char **rm_red_args(char *args[], int n, t_prompt *pmp);
-int ft_arglen(char **args);
+char		**rm_red_args(char *args[], int n, t_prompt *pmp);
+int			ft_arglen(char **args);
+void		ft_broom(char **arr);
 
 #endif

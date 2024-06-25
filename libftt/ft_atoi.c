@@ -6,18 +6,11 @@
 /*   By: messkely <messkely@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/03 17:58:29 by messkely          #+#    #+#             */
-/*   Updated: 2024/06/08 11:37:09 by messkely         ###   ########.fr       */
+/*   Updated: 2024/06/25 22:23:41 by messkely         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
-
-static int	ft_isspace(char c)
-{
-	if ((c >= 9 && c <= 13) || c == ' ')
-		return (1);
-	return (0);
-}
 
 int	ft_atoi(const char *str)
 {

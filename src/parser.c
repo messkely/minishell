@@ -6,7 +6,7 @@
 /*   By: messkely <messkely@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/03 10:54:43 by messkely          #+#    #+#             */
-/*   Updated: 2024/06/25 11:17:39 by messkely         ###   ########.fr       */
+/*   Updated: 2024/06/25 22:50:33 by messkely         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -105,34 +105,37 @@ static int count_valid_elements(char *args[], int n)
 
 char **rm_red_args(char *args[], int n, t_prompt *pmp)
 {
-    int new_size = count_valid_elements(args, n);
-    char **new_args = (char **)malloc((new_size + 1) * sizeof(char *));
-    int j = 0;
-    int i = 0;
-    int file_index = 0;
+	char	**new_args;
+    int 	new_size;
+	int		i;
+	int		j;
+	int		file_index;
 
+    j = 0;
+    i = 0;
+    file_index = 0;
+	new_size = count_valid_elements(args, n);
+    new_args = malloc((new_size + 1) * sizeof(char *));
+	if (!new_args)
+		return (NULL);
+	pmp->file = malloc((n - new_size + 1) * sizeof(char *));
+	 if (!pmp->file)
+        return (ft_broom(new_args), NULL);
     while (i < n)
     {
         if (!strcmp(args[i], ">") || !strcmp(args[i], "<") ||
             !strcmp(args[i], ">>") || !strcmp(args[i], "<<"))
         {
-            if (i + 1 < n)
-            {
+            // if (i + 1 < n)
+            // {
                 pmp->file[file_index++] = strdup(args[i]);
                 pmp->file[file_index++] = strdup(args[++i]);
-            }
+            // }
         }
         else
-        {
             new_args[j++] = strdup(args[i]);
-        }
         i++;
     }
-    new_args[j] = NULL;
-    pmp->file[file_index] = NULL;
-    for (int k = 0; k < n; k++)
-        free(args[k]);
-    free(args);
-
-    return new_args;
+    ft_broom(args);
+    return (new_args[j] = NULL, pmp->file[file_index] = NULL, new_args);
 }

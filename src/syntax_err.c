@@ -6,17 +6,11 @@
 /*   By: messkely <messkely@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/31 10:15:54 by messkely          #+#    #+#             */
-/*   Updated: 2024/06/25 12:49:43 by messkely         ###   ########.fr       */
+/*   Updated: 2024/06/25 22:43:50 by messkely         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
-
-int	ft_ispace(char c)
-{
-	return (c == ' ' || c == '\t' || c == '\n'
-		|| c == '\v' || c == '\f' || c == '\r');
-}
 
 void	ft_error(char *s, char c)
 {
@@ -24,6 +18,16 @@ void	ft_error(char *s, char c)
 		printf("minishell: %s newline\n", s);
 	else
 		printf("minishell: %s `%c'\n", s, c);
+}
+
+void	ft_broom(char **arr)
+{
+	int	i;
+
+	i = 0;
+	while (arr[i])
+		free(arr[i++]);
+	free(arr);
 }
 
 static int	check_multi_pipe(char *s)
@@ -46,7 +50,7 @@ static int	check_multi_pipe(char *s)
 		else if (s[i] == '|' && !double_quote && !single_quote)
 		{
 			i++;
-			while (s[i] && ft_ispace(s[i]))
+			while (s[i] && ft_isspace(s[i]))
 				i++;
 			if (s[i] == '|')
 				return (printf("syntax error near unexpected token `|'\n"), 1);
@@ -56,65 +60,51 @@ static int	check_multi_pipe(char *s)
 	return (0);
 }
 
-int	red_cases(char c1, char c2)
+static int check_red_pattern(char *s, int *i)
 {
-	return ((c1 == '<' && c2 == '<') || (c1 == '>' && c2 == '>')
-		|| ((c1 == '<' || c1 == '>') && (c2 != '<' && c2 != '>'))
-		|| (c1 == '<' && c2 == '>'));
+	int j = *i;
+
+	if (s[j] == '<' && s[j + 1] == '<')
+		j += 2;
+	else if (s[j] == '>' && s[j + 1] == '>')
+		j += 2;
+	else if (s[j] == '<' && s[j + 1] == '>')
+		j += 2;
+	else if (s[j] == '<' || s[j] == '>')
+		j++;
+	else
+		return (0);
+	while (s[j] && s[j] == ' ')
+		j++;
+	if (!s[j] || (s[j] == '<' || s[j] == '>'))
+		return (0);
+	*i = j - 1;
+	return (1);
 }
 
-int	check_red(char *s, int *i)
+static int check_syntax_red(char *s)
 {
-	int	red;
+	int single_quote = 0;
+	int double_quote = 0;
+	int i = 0;
 
-	red = 0;
-	while (s[*i])
-	{
-		while (s[*i] && s[*i] == ' ')
-			(*i)++;
-		if (s[*i] == '\0')
-			return (0);
-		if (red_cases(s[*i], s[*i + 1]) && !red)
-		{
-			red = 1;
-			(*i)++;
-			if (red_cases(s[*i + 1], s[*i + 1]))
-				return (0);
-			(*i)++;
-			continue ;
-		}
-		else if ((s[*i] != '<' && s[*i] != '>'))
-			return (1);
-		else
-			return (0);
-		(*i)++;
-	}
-	return (0);
-}
-
-int	check_syntax_red(char *s)
-{
-	int	single_quote;
-	int	double_quote;
-	int	i;
-
-	single_quote = 0;
-	double_quote = 0;
-	i = 0;
 	while (s[i])
 	{
 		if (s[i] == '\'' && !double_quote)
 			single_quote = !single_quote;
 		else if (s[i] == '"' && !single_quote)
 			double_quote = !double_quote;
-		else if ((s[i] == '>' || s[i] == '<') && !double_quote && !single_quote)
+		else if ((s[i] == '<' || s[i] == '>') && !single_quote && !double_quote)
 		{
-			if (!check_red((char *)&s[i], &i))
-				return (ft_error("syntax error near unexpected token", s[i]), 1);
-			i--;
+			if (!check_red_pattern(s, &i))
+			{
+				ft_error("syntax error near unexpected token `%c'\n", s[i]);
+				return (1);
+			}
 		}
 		i++;
 	}
+
 	return (0);
 }
 
