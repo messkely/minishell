@@ -6,23 +6,11 @@
 /*   By: messkely <messkely@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/03 10:54:43 by messkely          #+#    #+#             */
-/*   Updated: 2024/06/10 20:36:59 by messkely         ###   ########.fr       */
+/*   Updated: 2024/06/25 11:17:39 by messkely         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
-
-static int	check_red(int c1, int c2)
-{
-	if ((c1 == '<' && c2 == '<')
-		|| (c1 == '>' && c2 == '>')
-		|| (c1 == '>' || c1 == '<'))
-		return (1);
-	else if (c1 == '>' && c2 == '<')
-		return (-1);
-	else
-		return (0);
-}
 
 char	**process_token(char *s, char token)
 {
@@ -38,9 +26,11 @@ char	**process_token(char *s, char token)
 	double_quote = 0;
 	single_quote = 0;
 	tok_count = 0;
-	av = malloc(100 * sizeof(char *));
+	
+	av = malloc((strlen(s) / 2 + 2) * sizeof(char *));
 	if (!av)
 		return (NULL);
+	
 	while (s[i])
 	{
 		if (s[i] == '\'' && !double_quote)
@@ -49,41 +39,16 @@ char	**process_token(char *s, char token)
 			double_quote = !double_quote;
 		if (s[i] == token && !single_quote && !double_quote)
 		{
-			av[tok_count++] = ft_substr(s, start, i);
+			av[tok_count++] = strndup(s + start, i - start);
 			start = i + 1;
 		}
 		i++;
 	}
 	if (start < i)
-		av[tok_count++] = ft_substr(s, start, i);
-	return (av[tok_count] = NULL, av);
-}
+		av[tok_count++] = strndup(s + start, i - start);
 
-char	*process_red(char *s)
-{
-	int		i;
-	int		double_quote;
-	int		single_quote;
-	char	*av;
-
-	i = 0;
-	double_quote = 0;
-	single_quote = 0;
-	av = NULL;
-	while (s[i])
-	{
-		if (s[i] == '\'' && !double_quote)
-			single_quote = !single_quote;
-		else if (s[i] == '"' && !single_quote)
-			double_quote = !double_quote;
-		if (check_red(s[i], s[i + 1]) && !single_quote && !double_quote)
-		{
-			if (s[i + 2] != '>' || s[i + 2] != '<')
-				return (av = ft_strdup(get_last_arg((char *)&s[i], 1)), av);
-		}
-		i++;
-	}
-	return (av);
+	av[tok_count] = NULL;
+	return av;
 }
 
 char	*rm_escape_char(char *s)
@@ -98,7 +63,7 @@ char	*rm_escape_char(char *s)
 	j = 0;
 	single_quote = 0;
 	double_quote = 0;
-	res = malloc(strlen(s) + 1);
+	res = malloc((ft_strlen(s) + 1) * sizeof(char));
 	if (!res)
 		return (NULL);
 	while (s[i])
@@ -114,11 +79,60 @@ char	*rm_escape_char(char *s)
 	return (res[j] = '\0', res);
 }
 
-void	fill_stack(char **arr, t_prompt *pmp)
+int ft_arglen(char **args)
 {
-	int	i;
+    int i = 0;
+    while (args[i])
+        i++;
+    return (i);
+}
 
-	i = 0;
-	while (arr[i])
-		ft_add_back(pmp, ft_lstnew(arr[i++]));
+static int count_valid_elements(char *args[], int n)
+{
+    int count = 0;
+    int i = 0;
+    while (i < n)
+    {
+        if (strcmp(args[i], ">") == 0 || strcmp(args[i], "<") == 0 ||
+            strcmp(args[i], ">>") == 0 || strcmp(args[i], "<<") == 0)
+            i++;
+        else
+            count++;
+        i++;
+    }
+    return count;
+}
+
+char **rm_red_args(char *args[], int n, t_prompt *pmp)
+{
+    int new_size = count_valid_elements(args, n);
+    char **new_args = (char **)malloc((new_size + 1) * sizeof(char *));
+    int j = 0;
+    int i = 0;
+    int file_index = 0;
+
+    while (i < n)
+    {
+        if (!strcmp(args[i], ">") || !strcmp(args[i], "<") ||
+            !strcmp(args[i], ">>") || !strcmp(args[i], "<<"))
+        {
+            if (i + 1 < n)
+            {
+                pmp->file[file_index++] = strdup(args[i]);
+                pmp->file[file_index++] = strdup(args[++i]);
+            }
+        }
+        else
+        {
+            new_args[j++] = strdup(args[i]);
+        }
+        i++;
+    }
+    new_args[j] = NULL;
+    pmp->file[file_index] = NULL;
+    for (int k = 0; k < n; k++)
+        free(args[k]);
+    free(args);
+
+    return new_args;
 }

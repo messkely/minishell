@@ -6,7 +6,7 @@
 /*   By: messkely <messkely@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/31 10:15:54 by messkely          #+#    #+#             */
-/*   Updated: 2024/06/12 10:53:36 by messkely         ###   ########.fr       */
+/*   Updated: 2024/06/25 12:49:43 by messkely         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,7 +36,7 @@ static int	check_multi_pipe(char *s)
 	single_quote = 0;
 	double_quote = 0;
 	if (s[i] == '|')
-		return (ft_error("syntax error near unexpected token `|'", 0), 1);
+		return (printf("syntax error near unexpected token `|'\n"), 1);
 	while (s[i])
 	{
 		if (s[i] == '\'' && !double_quote)
@@ -45,10 +45,11 @@ static int	check_multi_pipe(char *s)
 			double_quote = !double_quote;
 		else if (s[i] == '|' && !double_quote && !single_quote)
 		{
+			i++;
 			while (s[i] && ft_ispace(s[i]))
 				i++;
 			if (s[i] == '|')
-				return (ft_error("syntax error near unexpected token `|'", 0), 1);
+				return (printf("syntax error near unexpected token `|'\n"), 1);
 		}
 		i++;
 	}
@@ -100,7 +101,6 @@ int	check_syntax_red(char *s)
 	single_quote = 0;
 	double_quote = 0;
 	i = 0;
-	
 	while (s[i])
 	{
 		if (s[i] == '\'' && !double_quote)

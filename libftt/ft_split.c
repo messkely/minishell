@@ -90,13 +90,11 @@ static char	**split_part(const char *s, char c, char **ptr)
 
 char	**ft_split(const char *s, char c)
 {
-	int		j;
 	int		len;
 	char	**ptr;
 
 	if (!s)
 		return (NULL);
-	j = 0;
 	len = num_words(s, c);
 	ptr = (char **)malloc((len + 1) * sizeof(char *));
 	if (!ptr)
