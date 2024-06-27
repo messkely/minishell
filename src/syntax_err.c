@@ -6,7 +6,7 @@
 /*   By: messkely <messkely@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/31 10:15:54 by messkely          #+#    #+#             */
-/*   Updated: 2024/06/25 22:43:50 by messkely         ###   ########.fr       */
+/*   Updated: 2024/06/26 22:36:30 by messkely         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 
 void	ft_error(char *s, char c)
 {
-	if (c == '\n')
+	if (c == ' ' || c == '\0')
 		printf("minishell: %s newline\n", s);
 	else
 		printf("minishell: %s `%c'\n", s, c);
@@ -68,14 +68,14 @@ static int check_red_pattern(char *s, int *i)
 		j += 2;
 	else if (s[j] == '>' && s[j + 1] == '>')
 		j += 2;
-	else if (s[j] == '<' && s[j + 1] == '>')
-		j += 2;
 	else if (s[j] == '<' || s[j] == '>')
 		j++;
 	else
 		return (0);
 	while (s[j] && s[j] == ' ')
 		j++;
+	if (s[j] == '|')
+		return (0);
 	if (!s[j] || (s[j] == '<' || s[j] == '>'))
 		return (0);
 	*i = j - 1;
@@ -98,7 +98,7 @@ static int check_syntax_red(char *s)
 		{
 			if (!check_red_pattern(s, &i))
 			{
-				ft_error("syntax error near unexpected token `%c'\n", s[i]);
+				ft_error("syntax error near unexpected token", s[i + 1]);
 				return (1);
 			}
 		}

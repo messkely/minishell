@@ -6,7 +6,7 @@
 /*   By: messkely <messkely@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/29 14:34:20 by messkely          #+#    #+#             */
-/*   Updated: 2024/06/25 22:28:35 by messkely         ###   ########.fr       */
+/*   Updated: 2024/06/27 17:05:30 by messkely         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,26 +30,20 @@ void	ft_parser(t_prompt *pmp)
 		}
 		arr = process_token(input, '|');
 		fill_stack(arr, pmp);
-        for (int i = 0; arr[i]; i++)
-            free(arr[i]);
-        free(arr);
-        free(input);
+		ft_broom(arr);
+		free(input);
 	}
 }
-void f(void)
-{
-	system("leaks ./minishell");
-}
+
 int	main(int ac, char **av, char **env)
 {
-	t_prompt	*prompt = NULL;
+	t_prompt	*prompt;
 
-	atexit(f);
+	atexit(system("leaks ./minishell"));
+	prompt = NULL;
 	(void)ac;
 	(void)av;
 	(void)env;
 	ft_parser(prompt);
 	return (0);
 }
-
-// cat file1 > file2 file3 >> file4 file5 file6 | cat file1 > file2 file3 >> file4 file5 file6

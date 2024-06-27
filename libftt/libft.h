@@ -6,7 +6,7 @@
 /*   By: messkely <messkely@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/09 18:05:13 by messkely          #+#    #+#             */
-/*   Updated: 2024/06/25 22:22:41 by messkely         ###   ########.fr       */
+/*   Updated: 2024/06/26 22:01:16 by messkely         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +20,7 @@
 # include <stdio.h>
 
 int		ft_isalpha(int c);
+int		ft_strcmp(char *s1, char *s2);
 int		ft_isspace(char c);
 int		ft_isdigit(int c);
 int		ft_isalnum(int c);

@@ -6,49 +6,78 @@
 /*   By: messkely <messkely@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/03 10:54:43 by messkely          #+#    #+#             */
-/*   Updated: 2024/06/25 22:50:33 by messkely         ###   ########.fr       */
+/*   Updated: 2024/06/27 15:51:52 by messkely         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
 
-char	**process_token(char *s, char token)
+char *add_space_in_red(const char *s)
 {
-	int		i;
-	int		start;
-	int		double_quote;
-	int		single_quote;
-	int		tok_count;
-	char	**av;
+	int i;
+	int	j;
+	int double_quote = 0, single_quote = 0;
+    char *new_s;
 
 	i = 0;
-	start = 0;
-	double_quote = 0;
-	single_quote = 0;
-	tok_count = 0;
-	
-	av = malloc((strlen(s) / 2 + 2) * sizeof(char *));
-	if (!av)
-		return (NULL);
-	
-	while (s[i])
+	j = 0;
+	new_s = malloc(ft_strlen(s) * 2 + 1);
+    if (!new_s)
+        return (NULL);
+    while (s[i])
 	{
 		if (s[i] == '\'' && !double_quote)
-			single_quote = !single_quote;
-		else if (s[i] == '"' && !single_quote)
-			double_quote = !double_quote;
-		if (s[i] == token && !single_quote && !double_quote)
+            single_quote = !single_quote;
+        else if (s[i] == '"' && !single_quote)
+            double_quote = !double_quote;
+        if ((s[i] == '<' || s[i] == '>') && !single_quote && !double_quote)
 		{
-			av[tok_count++] = strndup(s + start, i - start);
-			start = i + 1;
-		}
+            if (i > 0 && !ft_isspace(s[i - 1]))
+                new_s[j++] = ' ';
+            new_s[j++] = s[i];
+            if ((s[i] == '<' || s[i] == '>') && s[i + 1] == s[i])
+                new_s[j++] = s[i++];
+            if (s[i + 1] && !ft_isspace(s[i + 1]))
+                new_s[j++] = ' ';
+        }
+		else
+            new_s[j++] = s[i];
 		i++;
-	}
-	if (start < i)
-		av[tok_count++] = strndup(s + start, i - start);
+    }
+    new_s[j] = '\0';
+    return new_s;
+}
 
-	av[tok_count] = NULL;
-	return av;
+char **process_token(char *s, char token)
+{
+    int i = 0, start = 0;
+    int double_quote = 0, single_quote = 0;
+    int tok_count = 0;
+    char **av;
+
+    av = malloc((strlen(s) / 2 + 2) * sizeof(char *));
+    if (!av)
+        return NULL;
+    while (s[i])
+	{
+        if (s[i] == '\'' && !double_quote)
+            single_quote = !single_quote;
+        else if (s[i] == '"' && !single_quote)
+            double_quote = !double_quote;
+        if (s[i] == token && !single_quote && !double_quote)
+		{
+            if (i > start)
+                av[tok_count++] = strndup(s + start, i - start);
+            while (s[i] == token)
+                i++;
+            start = i;
+        }
+		else
+            i++;
+    }
+    if (start < i)
+        av[tok_count++] = strndup(s + start, i - start);
+    return (av[tok_count] = NULL, av);
 }
 
 char	*rm_escape_char(char *s)
@@ -93,8 +122,8 @@ static int count_valid_elements(char *args[], int n)
     int i = 0;
     while (i < n)
     {
-        if (strcmp(args[i], ">") == 0 || strcmp(args[i], "<") == 0 ||
-            strcmp(args[i], ">>") == 0 || strcmp(args[i], "<<") == 0)
+        if (ft_strcmp(args[i], ">") == 0 || ft_strcmp(args[i], "<") == 0 ||
+            ft_strcmp(args[i], ">>") == 0 || ft_strcmp(args[i], "<<") == 0)
             i++;
         else
             count++;
@@ -123,19 +152,19 @@ char **rm_red_args(char *args[], int n, t_prompt *pmp)
         return (ft_broom(new_args), NULL);
     while (i < n)
     {
-        if (!strcmp(args[i], ">") || !strcmp(args[i], "<") ||
-            !strcmp(args[i], ">>") || !strcmp(args[i], "<<"))
+        if (!ft_strcmp(args[i], ">") || !ft_strcmp(args[i], "<") ||
+            !ft_strcmp(args[i], ">>") || !ft_strcmp(args[i], "<<"))
         {
-            // if (i + 1 < n)
-            // {
-                pmp->file[file_index++] = strdup(args[i]);
-                pmp->file[file_index++] = strdup(args[++i]);
-            // }
+                pmp->file[file_index++] = ft_strdup(args[i]);
+				if (args[i + 1])
+                	pmp->file[file_index++] = ft_strdup(args[++i]);
         }
         else
-            new_args[j++] = strdup(args[i]);
+            new_args[j++] = ft_strdup(args[i]);
         i++;
     }
     ft_broom(args);
     return (new_args[j] = NULL, pmp->file[file_index] = NULL, new_args);
 }
+// >> |
+// syntax error near unexpected token `>'

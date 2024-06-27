@@ -6,7 +6,7 @@
 /*   By: messkely <messkely@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/29 19:51:11 by messkely          #+#    #+#             */
-/*   Updated: 2024/06/25 22:44:23 by messkely         ###   ########.fr       */
+/*   Updated: 2024/06/26 23:24:21 by messkely         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,5 +38,7 @@ void		fill_stack(char **arr, t_prompt *pmp);
 char		**rm_red_args(char *args[], int n, t_prompt *pmp);
 int			ft_arglen(char **args);
 void		ft_broom(char **arr);
+
+char		*add_space_in_red(const char *s);
 
 #endif

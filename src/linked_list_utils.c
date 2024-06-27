@@ -6,42 +6,39 @@
 /*   By: messkely <messkely@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/10 20:28:39 by messkely          #+#    #+#             */
-/*   Updated: 2024/06/25 22:41:13 by messkely         ###   ########.fr       */
+/*   Updated: 2024/06/27 17:07:26 by messkely         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
 
-t_prompt *ft_lstnew(char *data)
+t_prompt	*ft_lstnew(char *data)
 {
-    t_prompt *new;
-    int i;
+	t_prompt	*new;
+	int			i;
 
-    new = malloc(sizeof(t_prompt));
-    if (!new)
-        return (NULL);
-    data = ft_strtrim(data, " ");
-    new->argv = process_token(data, ' ');
+	new = malloc(sizeof(t_prompt));
+	if (!new)
+		return (NULL);
+	data = ft_strtrim(data, " ");
+	data = add_space_in_red(data);
+	new->argv = process_token(data, ' ');
 	free(data);
-    if (!new->argv)
-        return (free(new), NULL);
-    i = 0;
-    while (new->argv[i])
-    {
-        new->argv[i] = rm_escape_char(new->argv[i]);
-        i++;
-    }
-    new->argv = rm_red_args(new->argv, ft_arglen(new->argv), new);
-
-    for (int i = 0; new->argv[i]; i++)
-        printf("argv[%d] %s\n",i, new->argv[i]);
-
-    for (int i = 0; new->file[i] != NULL; i++)
-        printf("file [%d] %s\n",i, new->file[i]);
-    printf("########################\n");
-
-    new->next = NULL;
-    return new;
+	if (!new->argv)
+		return (free(new), NULL);
+	i = 0;
+	while (new->argv[i])
+	{
+		new->argv[i] = rm_escape_char(new->argv[i]);
+		i++;
+	}
+	new->argv = rm_red_args(new->argv, ft_arglen(new->argv), new);
+	for (int i = 0; new->argv[i]; i++)
+		printf("argv[%d] %s\n", i, new->argv[i]);
+	for (int i = 0; new->file[i] != NULL; i++)
+		printf("file [%d] %s\n", i, new->file[i]);
+	printf("########################\n");
+	return (new->next = NULL, new);
 }
 
 t_prompt	*ft_last_node(t_prompt *head)
@@ -74,4 +71,3 @@ void	fill_stack(char **arr, t_prompt *pmp)
 	while (arr[i])
 		ft_add_back(pmp, ft_lstnew(arr[i++]));
 }
-
