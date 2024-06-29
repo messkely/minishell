@@ -6,7 +6,7 @@
 /*   By: messkely <messkely@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/31 10:15:54 by messkely          #+#    #+#             */
-/*   Updated: 2024/06/26 22:36:30 by messkely         ###   ########.fr       */
+/*   Updated: 2024/06/28 20:29:05 by messkely         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,16 +18,6 @@ void	ft_error(char *s, char c)
 		printf("minishell: %s newline\n", s);
 	else
 		printf("minishell: %s `%c'\n", s, c);
-}
-
-void	ft_broom(char **arr)
-{
-	int	i;
-
-	i = 0;
-	while (arr[i])
-		free(arr[i++]);
-	free(arr);
 }
 
 static int	check_multi_pipe(char *s)
@@ -49,8 +39,7 @@ static int	check_multi_pipe(char *s)
 			double_quote = !double_quote;
 		else if (s[i] == '|' && !double_quote && !single_quote)
 		{
-			i++;
-			while (s[i] && ft_isspace(s[i]))
+			while (s[++i] && ft_isspace(s[i]))
 				i++;
 			if (s[i] == '|')
 				return (printf("syntax error near unexpected token `|'\n"), 1);
@@ -60,10 +49,11 @@ static int	check_multi_pipe(char *s)
 	return (0);
 }
 
-static int check_red_pattern(char *s, int *i)
+static int	check_red_pattern(char *s, int *i)
 {
-	int j = *i;
+	int	j;
 
+	j = *i;
 	if (s[j] == '<' && s[j + 1] == '<')
 		j += 2;
 	else if (s[j] == '>' && s[j + 1] == '>')
@@ -82,12 +72,15 @@ static int check_red_pattern(char *s, int *i)
 	return (1);
 }
 
-static int check_syntax_red(char *s)
+static int	check_syntax_red(char *s)
 {
-	int single_quote = 0;
-	int double_quote = 0;
-	int i = 0;
+	int	single_quote;
+	int	double_quote;
+	int	i;
 
+	single_quote = 0;
+	double_quote = 0;
+	i = 0;
 	while (s[i])
 	{
 		if (s[i] == '\'' && !double_quote)
@@ -104,16 +97,13 @@ static int check_syntax_red(char *s)
 		}
 		i++;
 	}
-
 	return (0);
 }
 
 int	check_syntax(char *input)
 {
 	if (check_multi_pipe(input) || check_syntax_red(input))
-		return (1);
-	return (0);
+		return (free(input), 1);
+	return (free(input), 0);
 }
-
-// bash-3.2$ cat > jdjd jdjd  < shiva < shiva << shiva
-// hack danger :  cat >> jdjd >> jdjd >> jdjd < shiva >> jdjd << shiva ">>" jdjd
+// danger :  cat >> jdjd >> jdjd >> jdjd < shiva >> jdjd << shiva ">>" jdjd

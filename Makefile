@@ -2,7 +2,7 @@ NAME 	= minishell
 CC		= cc
 FLAGS	= -Wall -Wextra -Werror
 LDFLAGS	= -lreadline
-SRC		= src/minishell.c src/syntax_err.c src/parser.c src/linked_list_utils.c
+SRC		= src/minishell.c src/syntax_err.c src/parser.c src/linked_list_utils.c src/rm_parser.c
 OBJ 	= $(SRC:.c=.o)
 RM		= rm -f
 

@@ -6,11 +6,23 @@
 /*   By: messkely <messkely@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/10 20:28:39 by messkely          #+#    #+#             */
-/*   Updated: 2024/06/27 17:07:26 by messkely         ###   ########.fr       */
+/*   Updated: 2024/06/29 11:29:30 by messkely         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
+
+void	ft_broom(char **arr)
+{
+	int	i;
+
+	i = 0;
+	if (!arr)
+		return ;
+	while (arr[i])
+		free(arr[i++]);
+	free(arr);
+}
 
 t_prompt	*ft_lstnew(char *data)
 {
@@ -33,11 +45,24 @@ t_prompt	*ft_lstnew(char *data)
 		i++;
 	}
 	new->argv = rm_red_args(new->argv, ft_arglen(new->argv), new);
-	for (int i = 0; new->argv[i]; i++)
+	i = 0;
+	while (new->argv[i])
+	{
 		printf("argv[%d] %s\n", i, new->argv[i]);
-	for (int i = 0; new->file[i] != NULL; i++)
+		i++;
+	}
+	i = 0;
+	while (new->file[i] != NULL)
+	{
 		printf("file [%d] %s\n", i, new->file[i]);
+		i++;
+	}
 	printf("########################\n");
+	ft_broom(new->argv);
+	if (new->file)
+		ft_broom(new->file);
+	else
+		free(new->file);
 	return (new->next = NULL, new);
 }
 
