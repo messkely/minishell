@@ -6,7 +6,7 @@
 /*   By: messkely <messkely@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/03 10:54:43 by messkely          #+#    #+#             */
-/*   Updated: 2024/06/29 09:56:01 by messkely         ###   ########.fr       */
+/*   Updated: 2024/07/01 02:26:57 by messkely         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,7 @@ void	toggle_quotes(char c, int *single_quote, int *double_quote)
 		*double_quote = !(*double_quote);
 }
 
-static char	*add_space_in_red_cp(const char *s, char *new_s,
+static char	*add_space_in_red_cp(char *s, char *new_s,
 	int double_quote, int single_quote)
 {
 	int	i;
@@ -45,10 +45,10 @@ static char	*add_space_in_red_cp(const char *s, char *new_s,
 			new_s[j++] = s[i];
 		i++;
 	}
-	return (new_s[j] = '\0', new_s);
+	return (free(s), new_s[j] = '\0', new_s);
 }
 
-char	*add_space_in_red(const char *s)
+char	*add_space_in_red(char *s)
 {
 	int		double_quote;
 	int		single_quote;
@@ -62,16 +62,16 @@ char	*add_space_in_red(const char *s)
 	return (add_space_in_red_cp(s, new_s, double_quote, single_quote));
 }
 
-char	**process_token_cp(char *s, char token, int start, int tok_count)
+char	**process_token_cp(char *s, char token, char **av, int tok_count)
 {
 	static int	i;
 	int			single_quote;
 	int			double_quote;
-	char		**av;
+	int			start;
 
 	single_quote = 0;
 	double_quote = 0;
-	av = malloc((strlen(s) / 2 + 2) * sizeof(char *));
+	start = 0;
 	while (s[i])
 	{
 		toggle_quotes(s[i], &single_quote, &double_quote);
@@ -95,8 +95,12 @@ char	**process_token(char *s, char token)
 {
 	int		start;
 	int		tok_count;
+	char	**av;
 
 	start = 0;
 	tok_count = 0;
-	return (process_token_cp(s, token, start, tok_count));
+	av = malloc((strlen(s) / 2 + 2) * sizeof(char *));
+	if (!av)
+		return (NULL);
+	return (process_token_cp(s, token, av, tok_count));
 }

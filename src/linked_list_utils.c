@@ -6,7 +6,7 @@
 /*   By: messkely <messkely@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/10 20:28:39 by messkely          #+#    #+#             */
-/*   Updated: 2024/06/29 11:29:30 by messkely         ###   ########.fr       */
+/*   Updated: 2024/07/01 06:44:52 by messkely         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,75 +24,79 @@ void	ft_broom(char **arr)
 	free(arr);
 }
 
-t_prompt	*ft_lstnew(char *data)
+t_prompt *ft_lstnew(char *data)
 {
-	t_prompt	*new;
-	int			i;
+    t_prompt	*new;
+    int 		i;
 
-	new = malloc(sizeof(t_prompt));
-	if (!new)
-		return (NULL);
-	data = ft_strtrim(data, " ");
-	data = add_space_in_red(data);
-	new->argv = process_token(data, ' ');
-	free(data);
-	if (!new->argv)
-		return (free(new), NULL);
-	i = 0;
-	while (new->argv[i])
-	{
-		new->argv[i] = rm_escape_char(new->argv[i]);
-		i++;
-	}
-	new->argv = rm_red_args(new->argv, ft_arglen(new->argv), new);
-	i = 0;
-	while (new->argv[i])
-	{
-		printf("argv[%d] %s\n", i, new->argv[i]);
-		i++;
-	}
-	i = 0;
-	while (new->file[i] != NULL)
-	{
-		printf("file [%d] %s\n", i, new->file[i]);
-		i++;
-	}
-	printf("########################\n");
-	ft_broom(new->argv);
-	if (new->file)
-		ft_broom(new->file);
-	else
-		free(new->file);
-	return (new->next = NULL, new);
+    new = malloc(sizeof(t_prompt));
+    if (!new)
+        return (NULL);
+    data = ft_strtrim(data, " ");
+    data = add_space_in_red(data);
+    new->argv = process_token(data, ' ');
+    free(data);
+    i = 0;
+    while (new->argv[i])
+    {
+        new->argv[i] = rm_escape_char(new->argv[i]);
+        i++;
+    }
+    new->argv = rm_red_args(new->argv, ft_arglen(new->argv), new);
+    new->next = NULL;
+    return (new);
 }
 
 t_prompt	*ft_last_node(t_prompt *head)
 {
+	
+	t_prompt	*last;
+
+	last = NULL;
 	if (!head)
 		return (NULL);
-	while (head->next)
+	while (head != NULL)
+	{
+		last = head;
 		head = head->next;
-	return (head);
+	}
+	return (last);
 }
 
-void	ft_add_back(t_prompt *head, t_prompt *new)
+void	ft_add_back(t_prompt **head, t_prompt *new)
 {
 	t_prompt	*last;
 
-	if (head == NULL)
+	if (*head == NULL)
 	{
-		head = new;
+		*head = new;
 		return ;
 	}
-	last = ft_last_node(head);
+	last = ft_last_node(*head);
 	last->next = new;
 }
 
-void	fill_stack(char **arr, t_prompt *pmp)
+void	free_list(t_prompt *head)
 {
-	int	i;
+	t_prompt *tmp;
 
-	i = 0;
-	while (arr[i])
-		ft_add_back(pmp, ft_lstnew(arr[i++]));
+	while (head)
+	{
+		tmp = head;
+		head = head->next;
+		if (tmp->argv)
+			ft_broom(tmp->argv);
+		if (tmp->file)
+			ft_broom(tmp->file);
+		free(tmp);
+	}
 }
+
+// void	fill_stack(char **arr, t_prompt **pmp)
+// {
+// 	int	i;
+
+// 	i = 0;
+// 	while (arr[i])
+// 		ft_add_back(pmp, ft_lstnew(arr[i++]));
+// }
