@@ -6,7 +6,7 @@
 /*   By: messkely <messkely@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/28 13:10:26 by messkely          #+#    #+#             */
-/*   Updated: 2024/07/01 03:51:54 by messkely         ###   ########.fr       */
+/*   Updated: 2024/07/02 03:31:02 by messkely         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,31 +22,32 @@ int	ft_arglen(char **args)
 	return (i);
 }
 
-char *rm_escape_char(char *s)
+char	*rm_escape_char(char *s)
 {
-    int i, j;
-    int single_quote = 0, double_quote = 0;
-    char *res;
+	int		i;
+	int		j;
+	int		single_quote;
+	int		double_quote;
+	char	*res;
 
-    res = malloc((ft_strlen(s) + 1) * sizeof(char));
-    if (!res)
-        return (NULL);
-    
-    i = 0;
-    j = 0;
-    while (s[i])
-    {
-        if (s[i] == '\'' && !double_quote)
-            single_quote = !single_quote;
-        else if (s[i] == '"' && !single_quote)
-            double_quote = !double_quote;
-        else
-            res[j++] = s[i];
-        i++;
-    }
-    res[j] = '\0';
-    free(s);
-    return (res);
+	single_quote = 0;
+	double_quote = 0;
+	res = malloc((ft_strlen(s) + 1) * sizeof(char));
+	if (!res)
+		exit(1);
+	i = 0;
+	j = 0;
+	while (s[i])
+	{
+		if (s[i] == '\'' && !double_quote)
+			single_quote = !single_quote;
+		else if (s[i] == '"' && !single_quote)
+			double_quote = !double_quote;
+		else
+			res[j++] = s[i];
+		i++;
+	}
+	return (res[j] = '\0', free(s), res);
 }
 
 static int	count_valid_elements(char *args[], int n)
@@ -94,20 +95,17 @@ char	**rm_red_args_cp(char **args, t_prompt *pmp, char **new_args)
 	return (new_args[j] = NULL, pmp->file[file_index] = NULL, new_args);
 }
 
-char **rm_red_args(char **args, int n, t_prompt *pmp)
+char	**rm_red_args(char **args, int n, t_prompt *pmp)
 {
-    char **new_args;
-    int new_size;
+	char	**new_args;
+	int		new_size;
 
-    new_size = count_valid_elements(args, n);
-    new_args = malloc((new_size + 1) * sizeof(char *));
-    if (!new_args)
-        return (NULL);
-
-    pmp->file = malloc((n - new_size + 1) * sizeof(char *));
-    if (!pmp->file)
-        return (ft_broom(new_args), NULL);
-
-    return (rm_red_args_cp(args, pmp, new_args));
+	new_size = count_valid_elements(args, n);
+	new_args = malloc((new_size + 1) * sizeof(char *));
+	if (!new_args)
+		exit(1);
+	pmp->file = malloc((n - new_size + 1) * sizeof(char *));
+	if (!pmp->file)
+		return (ft_broom(new_args), NULL);
+	return (rm_red_args_cp(args, pmp, new_args));
 }
-

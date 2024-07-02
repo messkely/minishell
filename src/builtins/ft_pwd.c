@@ -6,19 +6,19 @@
 /*   By: messkely <messkely@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/08 16:21:43 by messkely          #+#    #+#             */
-/*   Updated: 2024/07/01 06:30:03 by messkely         ###   ########.fr       */
+/*   Updated: 2024/07/02 16:46:33 by messkely         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../minishell.h"
 
-int		ft_pwd(int fd)
+int	ft_pwd(void)
 {
 	char	path[PATH_MAX];
 
 	if (!getcwd(path, PATH_MAX))
 		return (1);
-	ft_putendl_fd(path, fd);
+	printf("%s\n", path);
 	return (0);
 }
 

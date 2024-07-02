@@ -6,7 +6,7 @@
 /*   By: messkely <messkely@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/03 10:54:43 by messkely          #+#    #+#             */
-/*   Updated: 2024/07/01 02:26:57 by messkely         ###   ########.fr       */
+/*   Updated: 2024/07/02 02:02:08 by messkely         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,9 +56,11 @@ char	*add_space_in_red(char *s)
 
 	double_quote = 0;
 	single_quote = 0;
+	if (!s)
+		return (NULL);
 	new_s = malloc(ft_strlen(s) * 2 + 1);
 	if (!new_s)
-		return (NULL);
+		return (free(s), NULL);
 	return (add_space_in_red_cp(s, new_s, double_quote, single_quote));
 }
 
@@ -101,6 +103,6 @@ char	**process_token(char *s, char token)
 	tok_count = 0;
 	av = malloc((strlen(s) / 2 + 2) * sizeof(char *));
 	if (!av)
-		return (NULL);
+		exit(1);
 	return (process_token_cp(s, token, av, tok_count));
 }

@@ -6,7 +6,7 @@
 /*   By: messkely <messkely@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/10 20:28:39 by messkely          #+#    #+#             */
-/*   Updated: 2024/07/01 06:44:52 by messkely         ###   ########.fr       */
+/*   Updated: 2024/07/02 03:41:23 by messkely         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,32 +24,31 @@ void	ft_broom(char **arr)
 	free(arr);
 }
 
-t_prompt *ft_lstnew(char *data)
+t_prompt	*ft_lstnew(char *data)
 {
-    t_prompt	*new;
-    int 		i;
+	t_prompt	*new;
+	int			i;
 
-    new = malloc(sizeof(t_prompt));
-    if (!new)
-        return (NULL);
-    data = ft_strtrim(data, " ");
-    data = add_space_in_red(data);
-    new->argv = process_token(data, ' ');
-    free(data);
-    i = 0;
-    while (new->argv[i])
-    {
-        new->argv[i] = rm_escape_char(new->argv[i]);
-        i++;
-    }
-    new->argv = rm_red_args(new->argv, ft_arglen(new->argv), new);
-    new->next = NULL;
-    return (new);
+	new = malloc(sizeof(t_prompt));
+	if (!new)
+		return (exit(1), NULL);
+	data = ft_strtrim(data, " ");
+	data = add_space_in_red(data);
+	new->argv = process_token(data, ' ');
+	free(data);
+	i = 0;
+	while (new->argv[i])
+	{
+		new->argv[i] = rm_escape_char(new->argv[i]);
+		i++;
+	}
+	new->argv = rm_red_args(new->argv, ft_arglen(new->argv), new);
+	new->next = NULL;
+	return (new);
 }
 
 t_prompt	*ft_last_node(t_prompt *head)
 {
-	
 	t_prompt	*last;
 
 	last = NULL;
@@ -78,25 +77,14 @@ void	ft_add_back(t_prompt **head, t_prompt *new)
 
 void	free_list(t_prompt *head)
 {
-	t_prompt *tmp;
+	t_prompt	*tmp;
 
 	while (head)
 	{
 		tmp = head;
 		head = head->next;
-		if (tmp->argv)
-			ft_broom(tmp->argv);
-		if (tmp->file)
-			ft_broom(tmp->file);
+		ft_broom(tmp->argv);
+		ft_broom(tmp->file);
 		free(tmp);
 	}
 }
-
-// void	fill_stack(char **arr, t_prompt **pmp)
-// {
-// 	int	i;
-
-// 	i = 0;
-// 	while (arr[i])
-// 		ft_add_back(pmp, ft_lstnew(arr[i++]));
-// }

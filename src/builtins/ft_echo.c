@@ -6,16 +6,16 @@
 /*   By: messkely <messkely@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/30 03:53:33 by messkely          #+#    #+#             */
-/*   Updated: 2024/07/01 06:22:18 by messkely         ###   ########.fr       */
+/*   Updated: 2024/07/02 16:45:09 by messkely         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../minishell.h"
 
-int ft_echo(char **av)
+int	ft_echo(char **av)
 {
-	int i;
-	int is_option;
+	int	i;
+	int	is_option;
 
 	i = 1;
 	is_option = 0;
@@ -27,13 +27,13 @@ int ft_echo(char **av)
 	}
 	while (av[i])
 	{
-		ft_putstr_fd(av[i], 1);
+		printf(av[i]);
 		if (av[i + 1])
-			write(1, " ", 1);
+			printf(" ");
 		i++;
 	}
 	if (is_option == 0)
-		write(1, "\n", 1);
+		printf("\n");
 	return (0);
 }
 
