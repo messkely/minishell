@@ -6,7 +6,7 @@
 /*   By: messkely <messkely@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/29 19:51:11 by messkely          #+#    #+#             */
-/*   Updated: 2024/07/12 16:02:11 by messkely         ###   ########.fr       */
+/*   Updated: 2024/07/16 15:49:31 by messkely         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,6 +29,7 @@ typedef struct s_smplcmd
 	struct s_smplcmd	*next;
 }	t_smplcmd;
 
+char	*check_dollar(char *str);
 int			check_syntax(char *input);
 void		ft_handle_signals(void);
 void		ch_handle_signals(void);

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   handle_reds.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yiken <yiken@student.42.fr>                +#+  +:+       +#+        */
+/*   By: messkely <messkely@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/16 16:44:48 by yiken             #+#    #+#             */
-/*   Updated: 2024/07/11 12:29:39 by yiken            ###   ########.fr       */
+/*   Updated: 2024/07/16 17:52:17 by messkely         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,17 +18,26 @@ int	ft_strlen(char *str);
 void	here_doc(int *pipefd, int *std, char *lim)
 {
 	char	*str;
+	// char	*tmp;
 
 	dup2(std[0], STDIN_FILENO);
 	str = readline("> ");
+	str = check_dollar(str);
+	if (getenv(str))
+		str = getenv(str);
+	// free(tmp);
 	while (str && ft_strncmp(str, lim, ft_strlen(lim) + 1))
 	{
+		// printf("val = %s\n", str);
 		write(pipefd[1], str, ft_strlen(str));
 		write(pipefd[1], "\n", 1);
-		free(str);
+		// free(str);
 		str = readline("> ");
+		str = check_dollar(str);
+		if (getenv(str))
+			str = getenv(str);
 	}
-	free(str);
+	// free(str);
 	close(pipefd[1]);
 	dup2(pipefd[0], STDIN_FILENO);
 	close(pipefd[0]);

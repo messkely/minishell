@@ -6,7 +6,7 @@
 /*   By: messkely <messkely@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/07 15:00:41 by messkely          #+#    #+#             */
-/*   Updated: 2024/07/12 15:07:23 by messkely         ###   ########.fr       */
+/*   Updated: 2024/07/16 17:13:50 by messkely         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,9 +48,28 @@ int	exit_status(int exit_status)
 {
 	static int	value;
 
-	if (exit_status != -500)
-	{
+	if (exit_status != -100)
 		value = exit_status;
-	}
 	return (value);
+}
+
+char	*check_dollar(char *str)
+{
+	int		i;
+	int		j;
+	char	*tmp;
+
+	i = 0;
+	if (str[i] != '$')
+		return (str);
+	tmp = malloc(ft_strlen(str) + 1);
+	if (!tmp)
+		return (NULL);
+	j = 0;
+	i++;
+	while (str[i])
+		tmp[j++] = str[i++];
+	tmp[i] = '\0';
+	// free(str);
+	return (tmp);
 }
